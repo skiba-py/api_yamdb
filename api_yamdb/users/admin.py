@@ -15,7 +15,7 @@ class UserAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'bio',
-        'role'
+        'role',
     )
     empty_value_display = 'значение отсутствует'
     list_editable = ('role',)
