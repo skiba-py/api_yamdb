@@ -1,6 +1,5 @@
 from django.core.mail import send_mail
 
-
 EMAIL_YAMDB = 'iskiba60@gmail.com'
 
 

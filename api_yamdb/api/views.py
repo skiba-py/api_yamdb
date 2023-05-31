@@ -5,12 +5,16 @@ from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, Genre, Title
 from users.models import User
 
-from .utils import send_confirmation_code
-from .permissions import IsSuperUserOrIsAdminOnly
-from .serializers import (UserCreateSerializer, UserGetTokenSerializer,
+from .permissions import (AnonimReadOnly,
+                          IsSuperUserIsAdminIsModeratorIsAuthor,
+                          IsSuperUserOrIsAdminOnly)
+from .serializers import (CategorySerializer, GenreSerializer, TitleSerializer,
+                          UserCreateSerializer, UserGetTokenSerializer,
                           UserSerializer)
+from .utils import send_confirmation_code
 
 
 class UserViewSet(mixins.ListModelMixin,
@@ -117,3 +121,28 @@ class UserGetTokenViewSet(mixins.CreateModelMixin,
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
         message = {'token': str(AccessToken.for_user(user))}
         return Response(message, status=status.HTTP_200_OK)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    '''Произведения.'''
+    serializer_class = TitleSerializer
+    queryset = Title.objects.all()
+    permission_classes = (AnonimReadOnly | IsSuperUserOrIsAdminOnly,)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    '''Категории.'''
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    '''Жанры'''
+    serializer_class = GenreSerializer
+    queryset = Genre.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
