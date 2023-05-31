@@ -110,12 +110,7 @@ class Test05ReviewAPI:
         title = Title.objects.get(pk=titles[0]["id"])
         review = None
         try:
-            review = Review.objects.create(
-                text='Текст второго отзыва',
-                score='5',
-                author=admin,
-                title=title
-            )
+            review = Review.objects.create()
         except IntegrityError:
             pass
 
