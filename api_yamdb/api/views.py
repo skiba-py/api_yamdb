@@ -4,9 +4,13 @@ from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from reviews.models import Review, Title
 from users.models import User
 
-from .serializers import UserSerializer, UserCreateSerializer
+from .serializers import (UserSerializer, UserCreateSerializer,
+                          CommentsSerializer, ReviewsSerializer,
+                          UserSerializer)
+from .permissions import (AuthorizedOrReadOnly)
 
 
 class UserViewSet(mixins.ListModelMixin,
@@ -74,3 +78,33 @@ class UserCreateViewSet(mixins.CreateModelMixin,
         serializer = UserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
+
+class ReviewsViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewsSerializer
+    permission_classes = [AuthorizedOrReadOnly]
+
+    def get_queryset(self):
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        return title.reviews.all()
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        serializer.save(author=self.request.user, title=title)
+
+
+class CommentsViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentsSerializer
+    permission_classes = [AuthorizedOrReadOnly]
+
+    def get_queryset(self):
+        review_id = self.kwargs.get('review_id')
+        review = get_object_or_404(Review, pk=review_id)
+        return review.comments.all()
+
+    def perform_create(self, serializer):
+        review_id = self.kwargs.get('review_id')
+        review = get_object_or_404(Review, pk=review_id)
+        serializer.save(author=self.request.user, review=review)
