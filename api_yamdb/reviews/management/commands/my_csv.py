@@ -14,9 +14,9 @@ CSV_DIR = {
     User: 'users.csv',
 }
 
+
 class Command(BaseCommand):
     help = 'CSV to SQL'
-
 
     def handle(self, *args, **kwargs):
         for model, csv_f in CSV_DIR.items():
