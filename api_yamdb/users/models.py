@@ -4,14 +4,14 @@ from django.db import models
 
 LENGTH_TEXT = 15
 
-USER_ROLE = 'user'
-MODER_ROLE = 'moderator'
-ADMIN_ROLE = 'admin'
+ADMIN = "admin"
+MODERATOR = "moderator"
+USER = "user"
 
 ROLE_CHOICES = (
-    ('UR', USER_ROLE,),
-    ('MR', MODER_ROLE,),
-    ('AR', ADMIN_ROLE,),
+    (USER, "Пользователь"),
+    (MODERATOR, "Модератор"),
+    (ADMIN, "Администратор"),
 )
 
 
@@ -50,7 +50,7 @@ class User(AbstractUser):
         max_length=20,
         verbose_name='роль',
         choices=ROLE_CHOICES,
-        default=USER_ROLE
+        default=USER
     )
 
     class Meta:
@@ -61,11 +61,14 @@ class User(AbstractUser):
     def __str__(self):
         return self.username[:LENGTH_TEXT]
 
+    @property
     def is_admin(self):
-        return self.role == ADMIN_ROLE
+        return self.role == ADMIN or self.is_superuser
 
+    @property
     def is_moderator(self):
-        return self.role == MODER_ROLE
+        return self.role == MODERATOR
 
+    @property
     def is_user(self):
-        return self.role == USER_ROLE
+        return self.role == USER
