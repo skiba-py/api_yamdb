@@ -11,6 +11,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+AUTH_USER_MODEL = 'users.User'
+
 
 # Application definition
 
@@ -23,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'reviews',
+    'users',
 ]
 
 MIDDLEWARE = [
