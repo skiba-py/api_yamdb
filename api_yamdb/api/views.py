@@ -1,6 +1,7 @@
 from api.permissions import (IsAdminModeratorAuthorOrReadOnly,
                              IsAdminUserOrReadOnly, IsSuperUserOrIsAdminOnly)
 from django.contrib.auth.tokens import default_token_generator
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from requests import Response
@@ -150,7 +151,9 @@ class GenreViewSet(ModelMixinSet):
 class TitleViewSet(viewsets.ModelViewSet):
     '''Произведения.'''
     serializer_class = TitleSerializer
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')
+    ).all()
     permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = Filter

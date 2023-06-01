@@ -24,11 +24,12 @@ class Genre(models.Model):
     )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
     def __str__(self):
-        return self.name
+        return self.name[:15]
 
 
 class Category(models.Model):
@@ -49,11 +50,12 @@ class Category(models.Model):
     )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.name
+        return self.name[:15]
 
 
 class Title(models.Model):
@@ -96,11 +98,12 @@ class Title(models.Model):
     )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
 
     def __str__(self):
-        return self.name
+        return self.name[:15]
 
 
 class GenreTitle(models.Model):
@@ -184,6 +187,11 @@ class Comment(models.Model):
         verbose_name='Автор'
     )
     pub_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('pub_date',)
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
         return self.text[:15]
