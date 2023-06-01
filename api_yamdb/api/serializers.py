@@ -70,30 +70,12 @@ class UserGetTokenSerializer(serializers.Serializer):
     )
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    '''Сериалайзер произведений.'''
-    genre = serializers.SlugRelatedField(
-        slug_field='genre',
-        queryset=Genre.objects.all(),
-        many=True,
-    )
-
-    category = serializers.SlugRelatedField(
-        slug_field='category',
-        queryset=Category.objects.all(),
-    )
-
-    class Meta:
-        model = Title
-        fields = '__all__'
-
-
 class CategorySerializer(serializers.ModelSerializer):
     '''Сериалайзер категорий.'''
 
     class Meta:
         model = Category
-        fields = '__all__'
+        exclude = ("id",)
         lookup_field = 'slug'
 
 
@@ -102,8 +84,51 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = '__all__'
+        exclude = ("id",)
         lookup_field = 'slug'
+
+
+class TitleGETSerializer(serializers.ModelSerializer):
+    """Сериализатор объектов класса Title при GET запросах."""
+
+    genre = GenreSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+    rating = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Title
+        fields = (
+            'id',
+            'name',
+            'description',
+            'year',
+            'rating',
+            'category',
+            'genre',
+        )
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    """Сериализатор объектов класса Title при небезопасных запросах."""
+
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Genre.objects.all(),
+        many=True
+    )
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all()
+    )
+
+    class Meta:
+        model = Title
+        fields = ('name', 'description', 'year', 'category', 'genre')
+
+    def to_representation(self, title):
+        """Определяет какой сериализатор будет использоваться для чтения."""
+        serializer = TitleGETSerializer(title)
+        return serializer.data
 
 
 class ReviewsSerializer(serializers.ModelSerializer):

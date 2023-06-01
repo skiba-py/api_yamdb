@@ -7,12 +7,12 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
-
-from .permissions import (AnonimReadOnly,
-                          IsSuperUserIsAdminIsModeratorIsAuthor,
-                          IsSuperUserOrIsAdminOnly)
+from .mixins import ModelMixinSet
+from api.permissions import (IsAdminModeratorAuthorOrReadOnly,
+                             IsAdminUserOrReadOnly, IsSuperUserOrIsAdminOnly)
 from .serializers import (CategorySerializer, CommentsSerializer,
-                          GenreSerializer, ReviewsSerializer, TitleSerializer,
+                          GenreSerializer, ReviewsSerializer,
+                          TitleGETSerializer, TitleSerializer,
                           UserCreateSerializer, UserGetTokenSerializer,
                           UserSerializer)
 from .utils import send_confirmation_code
@@ -124,37 +124,43 @@ class UserGetTokenViewSet(mixins.CreateModelMixin,
         return Response(message, status=status.HTTP_200_OK)
 
 
-class TitleViewSet(viewsets.ModelViewSet):
-    '''Произведения.'''
-    serializer_class = TitleSerializer
-    queryset = Title.objects.all()
-    permission_classes = (AnonimReadOnly | IsSuperUserOrIsAdminOnly,)
-
-
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ModelMixinSet):
     '''Категории.'''
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     filter_backends = (filters.SearchFilter,)
+    permission_classes = (IsAdminUserOrReadOnly,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ModelMixinSet):
     '''Жанры'''
     serializer_class = GenreSerializer
     queryset = Genre.objects.all()
     filter_backends = (filters.SearchFilter,)
+    permission_classes = (IsAdminUserOrReadOnly,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
+class TitleViewSet(viewsets.ModelViewSet):
+    '''Произведения.'''
+    serializer_class = TitleSerializer
+    queryset = Title.objects.all()
+    permission_classes = (IsAdminUserOrReadOnly,)
+
+    def get_serializer_class(self):
+        """Определяет какой сериализатор будет использоваться
+        для разных типов запроса."""
+        if self.request.method == 'GET':
+            return TitleGETSerializer
+        return TitleSerializer
+
+
 class ReviewsViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewsSerializer
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsSuperUserIsAdminIsModeratorIsAuthor
-    )
+    permission_classes = (IsAdminModeratorAuthorOrReadOnly, )
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
@@ -169,10 +175,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
 
 class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsSuperUserIsAdminIsModeratorIsAuthor
-    )
+    permission_classes = (IsAdminModeratorAuthorOrReadOnly, )
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
