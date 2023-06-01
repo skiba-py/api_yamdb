@@ -5,7 +5,8 @@ from users.models import User
 
 class Genre(models.Model):
     '''Модель жанров.'''
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50)
 
     class Meta:
         verbose_name = 'Жанр'
@@ -18,6 +19,7 @@ class Genre(models.Model):
 class Category(models.Model):
     '''Модель категорий.'''
     name = models.CharField(max_length=100)
+    slug = models.SlugField()
 
     class Meta:
         verbose_name = 'Категория'
