@@ -3,7 +3,7 @@ from django.db.models import Avg
 
 from .models import Category, Genre, GenreTitle, Title
 
-LIST_PER_PAGE = 10
+from api_yamdb.settings import LIST_PER_PAGE
 
 
 @admin.register(Category)

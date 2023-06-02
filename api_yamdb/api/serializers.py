@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
 
@@ -45,15 +46,6 @@ class UserSerializer(serializers.ModelSerializer):
                 'Используйте другое имя!'
             )
         return username
-
-    def validate_role(self, role):
-        """Запрещает пользователям изменять себе роль."""
-        try:
-            if self.instance.role != 'admin':
-                return self.instance.role
-            return role
-        except AttributeError:
-            return role
 
 
 class UserGetTokenSerializer(serializers.Serializer):

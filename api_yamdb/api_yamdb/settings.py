@@ -130,3 +130,9 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+# Константы
+
+LENGTH_TEXT = 15
+LIST_PER_PAGE = 10
+EMAIL_YAMDB = 'registration_YaMDb@mail.com'

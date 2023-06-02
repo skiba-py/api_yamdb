@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 from .models import User
-
-LIST_PER_PAGE = 10
+from api_yamdb.settings import LIST_PER_PAGE
 
 
 @admin.register(User)

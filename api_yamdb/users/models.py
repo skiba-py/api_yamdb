@@ -2,21 +2,22 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
-LENGTH_TEXT = 15
-
-ADMIN = "admin"
-MODERATOR = "moderator"
-USER = "user"
-
-ROLE_CHOICES = (
-    (USER, "Пользователь"),
-    (MODERATOR, "Модератор"),
-    (ADMIN, "Администратор"),
-)
+from api_yamdb.settings import LENGTH_TEXT
 
 
 class User(AbstractUser):
     """Класс пользователей."""
+
+    ADMIN = "admin"
+    MODERATOR = "moderator"
+    USER = "user"
+
+    ROLE_CHOICES = (
+        (USER, "Пользователь"),
+        (MODERATOR, "Модератор"),
+        (ADMIN, "Администратор"),
+    )
+
     username = models.CharField(
         max_length=150,
         verbose_name='Имя пользователя',
@@ -63,12 +64,12 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == ADMIN or self.is_superuser
+        return self.role == self.ADMIN or self.is_superuser
 
     @property
     def is_moderator(self):
-        return self.role == MODERATOR
+        return self.role == self.MODERATOR
 
     @property
     def is_user(self):
-        return self.role == USER
+        return self.role == self.USER

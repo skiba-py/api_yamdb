@@ -1,6 +1,6 @@
 from django.core.mail import send_mail
 
-EMAIL_YAMDB = 'iskiba60@gmail.com'
+from api_yamdb.settings import EMAIL_YAMDB
 
 
 def send_confirmation_code(email, confirmation_code):

@@ -3,7 +3,9 @@ from datetime import datetime
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
+
 from users.models import User
+from api_yamdb.settings import LENGTH_TEXT
 
 
 class Genre(models.Model):
@@ -29,7 +31,7 @@ class Genre(models.Model):
         verbose_name_plural = 'Жанры'
 
     def __str__(self):
-        return self.name[:15]
+        return self.name[:LENGTH_TEXT]
 
 
 class Category(models.Model):
@@ -45,7 +47,7 @@ class Category(models.Model):
         unique=True,
         validators=[RegexValidator(
             regex=r'^[-a-zA-Z0-9_]+$',
-            message='Слаг жанра содержит недопустимый символ'
+            message='Слаг категории содержит недопустимый символ'
         )]
     )
 
@@ -55,7 +57,7 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.name[:15]
+        return self.name[:LENGTH_TEXT]
 
 
 class Title(models.Model):
@@ -103,7 +105,7 @@ class Title(models.Model):
         verbose_name_plural = 'Произведения'
 
     def __str__(self):
-        return self.name[:15]
+        return self.name[:LENGTH_TEXT]
 
 
 class GenreTitle(models.Model):
@@ -147,7 +149,7 @@ class Review(models.Model):
         verbose_name='Автор отзыва'
     )
     score = models.PositiveSmallIntegerField(
-        default=1,
+        default=None,
         blank=True,
         verbose_name='Оценка',
         validators=[
@@ -194,4 +196,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:LENGTH_TEXT]
