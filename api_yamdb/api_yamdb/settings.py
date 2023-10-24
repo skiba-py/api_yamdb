@@ -4,15 +4,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
+SECRET_KEY = os.getenv("SECRET_KEY", "default")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -60,8 +56,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'api_yamdb.wsgi.application'
 
 
-# Database
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -69,8 +63,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -88,26 +80,16 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
-# Email settings
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
@@ -131,7 +113,6 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'users.User'
 
-# Константы
 
 LENGTH_TEXT = 15
 LIST_PER_PAGE = 10
